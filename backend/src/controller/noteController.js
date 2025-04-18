@@ -303,7 +303,9 @@ export const searchSortPaginateNote = async (req, res) => {
       searchText,
     } = req.query;
 
-    const filter = {}; //to store filtered titles
+    console.log("sewrached", searchText);
+
+    const filter = { userId: req.userId };
 
     if (searchText) {
       filter.title = { $regex: searchText, $options: "i" };
@@ -312,11 +314,13 @@ export const searchSortPaginateNote = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const notes = await notesSchema
-      .find({ userId: req.userId }, filter)
-      .populate("userId", "userName") // Populate userName
+      .find(filter)
+      .populate("userId", "userName")
       .sort({ [sortField]: sortOrder === "asc" ? 1 : -1 })
       .skip(skip)
       .limit(Number(limit));
+
+    console.log("notess", notes);
 
     const totalNotes = await notesSchema.countDocuments(filter); //total notes in schema of all user
     const totalPages = Math.ceil(totalNotes / limit);

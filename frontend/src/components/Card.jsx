@@ -14,7 +14,7 @@ const Card = ({ title, content, noteId, getAll }) => {
         <div className='flex p-3'>
             <div className="w-[300px] rounded overflow-hidden shadow-lg flex justify-between">
                 <div className="px-6 py-4">
-                    <div className="font-bold text-xl mb-2">{title}</div>
+                    <div className="font-bold text-xl mb-2 w-[170px] overflow-x-scroll no-scrollbar">{title}</div>
                     <p className="text-gray-700 text-base">{content}</p>
                 </div>
                 <div className='flex px-6 py-4 gap-5'>

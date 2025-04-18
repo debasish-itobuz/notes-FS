@@ -12,6 +12,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+
         <Routes>
           <Route path='/' element={<Cover />} />
           <Route path='/register' element={<Register />} />
