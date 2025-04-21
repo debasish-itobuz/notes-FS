@@ -130,7 +130,6 @@ const Home = () => {
 
             <span className="px-3 py-1 md:px-4 md:py-2">
                 Page {currentPage} of {totalPage}
-                {/* Page 1 of 1 */}
             </span>
 
             <button

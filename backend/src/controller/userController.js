@@ -136,3 +136,28 @@ export const logout = async (req, res) => {
     });
   }
 };
+
+//get all user
+export const getAllUser = async (req, res) => {
+  try {
+    const users = await userSchema.find({ _id: { $ne: req.userId } });
+
+    if (users) {
+      res.status(200).json({
+        success: true,
+        message: "User fetched success",
+        data: users,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "User fetch fail",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
