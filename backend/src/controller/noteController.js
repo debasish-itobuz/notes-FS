@@ -299,7 +299,7 @@ export const searchSortPaginateNote = async (req, res) => {
       sortField = "title",
       sortOrder = "asc",
       page = 1,
-      limit = 5,
+      limit = 6,
       searchText,
     } = req.query;
 
@@ -329,7 +329,12 @@ export const searchSortPaginateNote = async (req, res) => {
       success: true,
       message: "Notes fetched successfully.",
       notes,
-      pagination: { totalNotes, currentPage: page, totalPages, limit },
+      pagination: {
+        totalNotes,
+        currentPage: parseInt(page),
+        totalPages,
+        limit,
+      },
     });
   } catch (error) {
     return res.status(500).json({
