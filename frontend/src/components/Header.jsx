@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import toast from 'react-hot-toast';
@@ -9,12 +9,16 @@ function Header() {
     let status = localStorage.getItem("loginStatus");
     const [state, setState] = useState(status);
     const accessToken = localStorage.getItem("accessToken")
+    const senderID = localStorage.getItem("userID")
 
     const [isOpen, setIsOpen] = useState(false)
     const [users, setUsers] = useState([])
     const [openModal, setOpenModal] = useState(false)
 
     const [chatModal, setChatModal] = useState(false)
+    const [userId, setUserId] = useState('')
+    const [messages, setMessages] = useState([])
+    // const [messageInput, setMessageInput] = useState("")
 
 
     const navigate = useNavigate();
@@ -65,6 +69,34 @@ function Header() {
         navigate("/login");
     }
 
+
+    const getAllChats = async () => {
+        try {
+            if (chatModal && userId) {
+                console.log("hello ", userId);
+                const res = await axios.post("http://localhost:8001/chat/getChat", {
+                    senderId: senderID,
+                    receiverId: userId,
+                })
+                console.log("chat res", res.data.data)
+                setMessages(res.data.data)
+
+            }
+
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    useEffect(() => {
+        getAllChats()
+    }, [userId])
+
+
+
+
     return (<>
         <nav className='flex justify-between bg-gray-100 p-2 lg:p-3'>
             <div className='flex gap-2'>
@@ -79,7 +111,7 @@ function Header() {
                         {isOpen && (
                             <div className="absolute left-0  bg-gray-200 border border-gray-500 rounded shadow-lg mt-1">
                                 {users?.map((users, index) => {
-                                    return <button key={index} className="block w-[200px] text-left py-2 px-4 hover:bg-gray-200" onClick={() => { toggleModal(users), setChatModal(true), setIsOpen(false) }}>{users.userName}</button>
+                                    return <button key={index} className="block w-[200px] text-left py-2 px-4 hover:bg-gray-200" onClick={() => { toggleModal(users), setChatModal(true), setIsOpen(false), setUserId(users._id) }}>{users.userName}</button>
                                 })}
                             </div>
                         )}
@@ -108,17 +140,20 @@ function Header() {
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
                     {/* Pesan Bot Pertama (Statis) */}
                     <div className="flex justify-start">
-                        <div className="max-w-[80%] rounded-lg p-3 bg-gray-200 text-gray-800 rounded-bl-none">
-                            <div className="flex items-center mb-1">
-                                <i data-lucide="bot" className="mr-1 w-4 h-4" />
-                                <span className="text-xs font-medium">Chatbot</span>
-                                <span className="text-xs ml-2 opacity-75">10:00</span>
-                            </div>
-                            <p>Hello! I'm your friendly chatbot. How can I help you today?</p>
+                        <div className="w-full rounded-lg p-3 bg-gray-200 text-gray-800 rounded-bl-none">
+
+                            {/* <p>Hello! I'm your friendly chatbot. How can I help you today?</p> */}
+                            {messages.map((item, index) => {
+                                return <p className={`p-2 rounded-lg mb-1 ${item.sender === userId
+                                    ? "bg-blue-100 self-start text-left w-[400px]"
+                                    : "bg-green-100 self-end ml-auto text-right w-[400px]"
+                                    }`}
+                                    key={index}>{item.content}</p>
+                            })}
                         </div>
                     </div>
                     {/* Contoh Pesan User (Statis) */}
-                    <div className="flex justify-end">
+                    {/* <div className="flex justify-end">
                         <div className="max-w-[80%] rounded-lg p-3 bg-blue-600 text-white rounded-br-none">
                             <div className="flex items-center mb-1">
                                 <i data-lucide="user" className="mr-1 w-4 h-4" />
@@ -127,18 +162,8 @@ function Header() {
                             </div>
                             <p>Hi! Can you tell me more about this?</p>
                         </div>
-                    </div>
-                    {/* Contoh Pesan Bot Kedua (Statis) */}
-                    <div className="flex justify-start">
-                        <div className="max-w-[80%] rounded-lg p-3 bg-gray-200 text-gray-800 rounded-bl-none">
-                            <div className="flex items-center mb-1">
-                                <i data-lucide="bot" className="mr-1 w-4 h-4" />
-                                <span className="text-xs font-medium">Chatbot</span>
-                                <span className="text-xs ml-2 opacity-75">10:02</span>
-                            </div>
-                            <p>I'm here to help! What would you like to know?</p>
-                        </div>
-                    </div>
+                    </div> */}
+
                 </div>
                 {/* Input Area */}
                 <div className="border-t border-gray-200 p-4 flex items-center">

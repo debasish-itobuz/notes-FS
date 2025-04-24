@@ -19,13 +19,7 @@ const PORT = process.env.PORT;
 
 connectDB();
 app.use(cors());
-// app.use(
-//   cors({
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//     credentials: true,
-//   })
-// );
+
 app.use(express.json());
 app.use("/user", route);
 app.use("/note", routeNote);
@@ -70,3 +64,5 @@ io.on("connection", (socket) => {
     await saveChat(socket.senderId, message.receiverId, message.message);
   });
 });
+
+
