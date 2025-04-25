@@ -19,6 +19,7 @@ function Header() {
     const [messages, setMessages] = useState([]); // to map all the chats between the users
     const [messageInput, setMessageInput] = useState("");// for inputing current chats to users
     const [flag, setFlag] = useState(false); //to trigger the getAll chats function when send button is clicked
+    const [senderName, setSenderName] = useState("")
 
     const navigate = useNavigate();
     const socketRef = useRef(null); // to store the reference of socket ID
@@ -92,6 +93,7 @@ function Header() {
     const toggleModal = (u) => {
         setChatModal(true);
         setUserId(u._id);
+        setSenderName(u.userName.toUpperCase())
         setIsOpen(false);
     };
 
@@ -192,7 +194,7 @@ function Header() {
                 <div className="bg-white rounded-lg shadow-lg w-full max-w-md overflow-hidden flex flex-col h-[550px] bottom-10 right-2 absolute">
                     <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
                         <div>
-                            <h1 className="font-bold text-lg">Simple Chat</h1>
+                            <h1 className="font-bold text-lg">{senderName}</h1>
                             <p className="text-xs text-blue-100">Online</p>
                         </div>
                         <RxCross2 size={30} className='cursor-pointer' onClick={() => setChatModal(false)} />
