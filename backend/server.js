@@ -31,10 +31,13 @@ server.listen(PORT, () => {
   console.log(`Notes app listening on port ${PORT}`);
 });
 
+
 const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
+    allowedHeaders: ["Authorization"],
+    credentials: true,
   },
 });
 
@@ -64,5 +67,3 @@ io.on("connection", (socket) => {
     await saveChat(socket.senderId, message.receiverId, message.message);
   });
 });
-
-
