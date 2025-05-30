@@ -7,13 +7,15 @@ import { io } from 'socket.io-client';
 
 function Header() {
     const user = localStorage.getItem("userName");
-    const status = localStorage.getItem("loginStatus");
+    // const status = localStorage.getItem("loginStatus");
+    // let status;
     const accessToken = localStorage.getItem("accessToken");
     const senderID = localStorage.getItem("userID");
 
-    const [state, setState] = useState(status); //to show the navbar items like chat,hello user after logged in
+    
     const [isOpen, setIsOpen] = useState(false); //to open the users dropdown whom we want to chat with
     const [users, setUsers] = useState([]);//to map all the users
+    const [state, setState] = useState(false); //to show the navbar items like chat,hello user after logged in
     const [chatModal, setChatModal] = useState(false);// to open the chat modal
     const [userId, setUserId] = useState(''); // to store the userId I am chatting with
     const [messages, setMessages] = useState([]); // to map all the chats between the users
@@ -65,6 +67,7 @@ function Header() {
             });
             setUsers(res.data.data);
         } catch (error) {
+
             console.error(error);
         }
     };
@@ -93,7 +96,7 @@ function Header() {
     const toggleModal = (u) => {
         setChatModal(true);
         setUserId(u._id);
-        setSenderName(u.userName.toUpperCase())
+        setSenderName(u.userName)
         setIsOpen(false);
     };
 
@@ -108,6 +111,7 @@ function Header() {
                 setMessages(res.data.data);
             }
         } catch (error) {
+
             console.error(error);
         }
     };
@@ -147,6 +151,26 @@ function Header() {
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+
+    const getUser = async () => {
+        try {
+            const res = await axios("http://localhost:8001/user/getUser", {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            });
+            console.log("getUser", res);
+            setState(res.data.data.isLoggedIn)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getUser()
+    }, [state])
+
+    
 
     return (
         <>

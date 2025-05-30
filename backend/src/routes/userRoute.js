@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAllUser,
+  getUser,
   login,
   logout,
   register,
@@ -16,5 +17,6 @@ route.get("/verify", verification);
 route.post("/login", login);
 route.delete("/logout", hasToken, logout);
 route.get("/getAll", hasToken, getAllUser);
+route.get("/getUser", hasToken, getUser);
 
 export default route;

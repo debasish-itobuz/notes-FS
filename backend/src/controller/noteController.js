@@ -303,7 +303,7 @@ export const searchSortPaginateNote = async (req, res) => {
       searchText,
     } = req.query;
 
-    console.log("sewrached", searchText);
+    // console.log("sewrached", searchText);
 
     const filter = { userId: req.userId };
 
@@ -320,7 +320,7 @@ export const searchSortPaginateNote = async (req, res) => {
       .skip(skip)
       .limit(Number(limit));
 
-    console.log("notess", notes);
+    // console.log("notess", notes);
 
     const totalNotes = await notesSchema.countDocuments(filter); //total notes in schema of all user
     const totalPages = Math.ceil(totalNotes / limit);

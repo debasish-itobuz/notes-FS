@@ -47,6 +47,8 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userSchema.findOne({ email: email });
+    // console.log("user 1 ", user);
+
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -60,16 +62,12 @@ export const login = async (req, res) => {
           message: "Incorrect password",
         });
       } else if (passwordCheck && user.verified === true) {
-        const existing = await sessionSchema.findOne({ userId: user._id });
-        console.log("my session", existing);
+        const existing = await sessionSchema.findOneAndDelete({
+          userId: user._id,
+        });
+        // console.log("my session", existing);
 
-        if (!existing) await sessionSchema.create({ userId: user._id });
-        else {
-          return res.status(400).json({
-            success: false,
-            message: "User Login session is Active",
-          });
-        }
+        await sessionSchema.create({ userId: user._id });
 
         const accessToken = jwt.sign(
           {
@@ -91,6 +89,8 @@ export const login = async (req, res) => {
           }
         );
 
+        user.isLoggedIn = true;
+        await user.save();
         return res.status(200).json({
           success: true,
           message: "User Logged in Successfully",
@@ -114,7 +114,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   const existing = await sessionSchema.findOne({ userId: req.userId });
-  console.log("existing ", existing);
+  // console.log("existing ", existing);
 
   try {
     if (existing) {
@@ -147,6 +147,32 @@ export const getAllUser = async (req, res) => {
         success: true,
         message: "User fetched success",
         data: users,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "User fetch fail",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+//get sinle user
+export const getUser = async (req, res) => {
+  try {
+    const user = await userSchema.findById({ _id: req.userId });
+    // console.log("my user", user);
+
+    if (user) {
+      res.status(200).json({
+        success: true,
+        message: "User fetched success",
+        data: user,
       });
     } else {
       res.status(400).json({

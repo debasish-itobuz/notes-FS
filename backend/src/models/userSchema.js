@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: "false",
   },
+  isLoggedIn: {
+    type: Boolean,
+    default: "false",
+  },
+
   token: {
     type: String,
     default: null,

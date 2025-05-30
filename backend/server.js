@@ -31,7 +31,6 @@ server.listen(PORT, () => {
   console.log(`Notes app listening on port ${PORT}`);
 });
 
-
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -46,20 +45,20 @@ io.use((socket, next) => {
     "Bearer ",
     ""
   );
-  console.log(socket);
-  console.log(socket.senderId);
+  // console.log(socket);
+  // console.log(socket.senderId);
   jwt.verify(accessToken, process.env.secretKey, async (err, decoded) => {
     if (err) {
       return next(new Error("Authentication error"));
     }
     socket.senderId = decoded.id;
-    console.log(socket.senderId);
+    // console.log(socket.senderId);
     next();
   });
 });
 
 io.on("connection", (socket) => {
-  console.log("User connected", socket.senderId);
+  // console.log("User connected", socket.senderId);
   socket.join(socket.senderId);
 
   socket.on("send_message", async (message) => {
